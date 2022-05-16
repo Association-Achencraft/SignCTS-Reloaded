@@ -1,0 +1,10 @@
+name: SignCTS
+version: '${project.version}'
+main: achen.signcts.Signcts
+api-version: 1.18
+
+commands:
+  cts:
+    description: Plugin SignCTS
+    usage: /cts <create|delete|info|update|reload>
+    permission: signcts.cts
