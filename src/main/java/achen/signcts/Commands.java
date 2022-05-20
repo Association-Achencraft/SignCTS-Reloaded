@@ -97,6 +97,8 @@ public class Commands implements CommandExecutor {
         }
 
         Signcts.task.put(player.getUniqueId(),task);
+
+        player.sendMessage("Cliquez sur un panneau");
         return true;
     }
 
