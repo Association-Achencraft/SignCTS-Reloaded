@@ -12,6 +12,8 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.ChatColor;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.checkerframework.checker.units.qual.C;
 
 
 import java.util.*;
@@ -21,7 +23,9 @@ public final class Signcts extends JavaPlugin {
     private static Timer timer;
     public static Signcts instance;
     public static List<MySign> signs = new ArrayList<>();
+    public static HashMap<String,String> colors = new HashMap<>();
     public static HashMap<UUID,CtsTask> task = new HashMap<>();
+    public static HashMap<String,String> config = new HashMap<>();
 
     @Override
     public void onEnable() {
@@ -30,6 +34,7 @@ public final class Signcts extends JavaPlugin {
         instance = this;
         Bukkit.getLogger().info(ChatColor.GREEN + "Enabled " + getName());
         timer = new Timer();
+        saveDefaultConfig();
 
         getCommand("cts").setExecutor(new Commands());
         getServer().getPluginManager().registerEvents(new ClickListener(), this);
@@ -37,28 +42,33 @@ public final class Signcts extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new SignListener(), this);
 
         loadConfigs();
-
         DataSource.connect();
-        DataSource.add("TEST");
+        loadSigns();
+        loadColors();
 
-        //Boucle toutes les 30 secondes
-        timer.schedule(new TimerTask() {
+
+
+        new BukkitRunnable() {
+            @Override
             public void run() {
-                updateSigns();
+                for (MySign s : signs) {
+                    s.actualise();
+                }
             }
-        }, 0, 30000);
-        //todo : fréquence réglable dans la config
+        }.runTaskTimer(instance,100, Integer.parseInt(config.get("update-interval"))*20);
+
     }
 
     @Override
     public void onDisable() {
         // Plugin shutdown logic
+        DataSource.disconnect();
         Bukkit.getLogger().info(ChatColor.RED + "Disabled " + this.getName());
         timer.cancel();
     }
 
 
-    public void loadConfigs() {
+    public void loadSigns() {
 
 
         int counter = 0;
@@ -99,11 +109,13 @@ public final class Signcts extends JavaPlugin {
 
                     if(!duplicate) {
                         signs.add(new MySign(world, x, y, z, idsae, mode));
+                        DataSource.add(idsae);
 
                         Sign s = (Sign) block.getState();
                         s.setLine(0, "[CTS]");
                         s.setLine(1, idsae);
                         s.setLine(2, mode.toString());
+                        s.setLine(3, "");
                         s.update();
                         counter++;
                     }
@@ -133,9 +145,36 @@ public final class Signcts extends JavaPlugin {
 
         saveConfig();
     }
-    public void updateSigns() {
-        //todo
+
+    public void loadColors() {
+        int counter = 0;
+        ConfigurationSection colorSection = getConfig().getConfigurationSection("colors");
+
+        if (colorSection != null) {
+
+            colors.put("time",colorSection.getString("time"));
+            colors.put("waiting",colorSection.getString("waiting"));
+            colors.put("unavailable",colorSection.getString("unavailable"));
+
+            ConfigurationSection linesSection = getConfig().getConfigurationSection("colors.lignes");
+            if (linesSection != null) {
+                for (String ligne : linesSection.getKeys(false)) {
+                    colors.put(ligne,linesSection.getString(ligne));
+                    counter++;
+                }
+            }
+        }
+        getLogger().info(counter + " couleurs chargées.");
     }
+
+    public void loadConfigs() {
+        ConfigurationSection configSection = getConfig().getConfigurationSection("variables");
+        config.put("redis-server",configSection.getString("redis-server"));
+        config.put("redis-port",configSection.getString("redis-port"));
+        config.put("redis-password",configSection.getString("redis-password"));
+        config.put("update-interval",configSection.getString("update-interval"));
+    }
+
 
 
 }

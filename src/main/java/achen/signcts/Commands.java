@@ -67,7 +67,7 @@ public class Commands implements CommandExecutor {
         CtsTask task = new CtsTask();
         String idsae = args[1];
 
-        //vérif regex idsae
+
         final Pattern rx1 = Pattern.compile("[a-zA-Z][a-zA-Z][a-zA-Z][a-zA-Z][a-zA-Z]_\\d\\d", Pattern.CASE_INSENSITIVE);
         final Pattern rx2 = Pattern.compile("[0-9]+", Pattern.CASE_INSENSITIVE);
         final Pattern rx3 = Pattern.compile("[0-9]+[a-zA-Z]", Pattern.CASE_INSENSITIVE);
@@ -149,14 +149,15 @@ public class Commands implements CommandExecutor {
 
     private boolean cmd_update() {
 
-        Signcts.instance.updateSigns();
+        //Signcts.instance.updateSigns();
+        //todo
         return true;
     }
 
     private boolean cmd_reload() {
 
         Signcts.signs.clear();
-        Signcts.instance.loadConfigs();
+        Signcts.instance.loadSigns();
         Signcts.instance.saveSigns();
         sender.sendMessage("[CTS] Reload effectué.");
         return true;

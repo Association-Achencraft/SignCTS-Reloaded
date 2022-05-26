@@ -76,5 +76,10 @@
             <artifactId>lettuce-core</artifactId>
             <version>6.1.8.RELEASE</version>
         </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20220320</version>
+        </dependency>
     </dependencies>
 </project>

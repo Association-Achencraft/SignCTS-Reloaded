@@ -5,13 +5,13 @@ import io.lettuce.core.api.StatefulRedisConnection;
 import io.lettuce.core.api.sync.RedisCommands;
 
 public class DataSource {
-    //récup data depuis Redis
 
     private static RedisClient redisClient;
     private static StatefulRedisConnection<String, String> connection;
 
     public static void connect() {
-        redisClient = RedisClient.create(RedisURI.create("redis://lucas-lett.fr:25617"));
+        String loginpath = Signcts.config.get("redis-password")+"@"+Signcts.config.get("redis-server")+":"+Signcts.config.get("redis-port");
+        redisClient = RedisClient.create(RedisURI.create("redis://"+loginpath));
         connection = redisClient.connect();
         System.out.println("Connected to Redis");
     }
@@ -22,32 +22,37 @@ public class DataSource {
         redisClient.shutdown();
     }
 
-    public static boolean add(String idsae) {
-
+    public static void add(String idsae) {
         RedisCommands<String, String> syncCommands = connection.sync();
+        if(syncCommands.get(idsae) == null)
+        {
+            syncCommands.set(idsae, "vide");
+        }
+    }
 
+    public static void remove(String idsae) {
+        //si encore des panneaux ont cet IDSAE, on garde
+        for (MySign s : Signcts.signs) {
+            System.out.println(s.idsae +" X "+idsae);
+            if(s.idsae.equalsIgnoreCase(idsae))  {
+                System.out.println("encore présent "+idsae);
+                return;
+            }
+        }
+        //sinon on supprime
+        RedisCommands<String, String> syncCommands = connection.sync();
+        syncCommands.del(idsae);
+        System.out.println("supprime "+idsae);
+
+    }
+
+    public static String get(String idsae) {
+        RedisCommands<String, String> syncCommands = connection.sync();
         String val = syncCommands.get(idsae);
-        if(val == "nil")
+        if(val == "" || val == null)
         {
-            System.out.println("yapa");
+            return "NO DATA";
         }
-        else
-        {
-            System.out.println(val);
-        }
-
-        syncCommands.set(idsae, "bar");
-
-        val = syncCommands.get(idsae);
-        if(val == "nil")
-        {
-            System.out.println("yapa");
-        }
-        else
-        {
-            System.out.println(val);
-        }
-
-        return true;
+        return val;
     }
 }

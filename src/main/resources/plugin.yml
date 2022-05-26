@@ -1,6 +1,7 @@
 name: SignCTS
 version: '${project.version}'
 main: achen.signcts.Signcts
+author: llett
 api-version: 1.18
 
 commands:

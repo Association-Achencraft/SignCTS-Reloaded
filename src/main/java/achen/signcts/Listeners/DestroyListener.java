@@ -1,5 +1,6 @@
 package achen.signcts.Listeners;
 
+import achen.signcts.DataSource;
 import achen.signcts.MySign;
 import achen.signcts.Signcts;
 import org.bukkit.Location;
@@ -21,9 +22,11 @@ public class DestroyListener implements Listener {
             {
                 if(s.x == location.getX() && s.y == location.getY() && s.z == location.getZ() && s.world == location.getWorld())
                 {
+                    String idsae = s.idsae;
                     Signcts.signs.remove(s);
                     Signcts.instance.saveSigns();
-                    //todo supprimer l'idsae si plus aucune référence dans REDIS
+
+                    DataSource.remove(idsae);
 
                     event.getPlayer().sendMessage("[CTS] Panneau CTS supprimé !");
                     return;

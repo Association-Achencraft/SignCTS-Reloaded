@@ -1,5 +1,6 @@
 package achen.signcts.Listeners;
 
+import achen.signcts.DataSource;
 import achen.signcts.Enums.Mode;
 import achen.signcts.MySign;
 import achen.signcts.Signcts;
@@ -19,7 +20,7 @@ public class SignListener implements Listener {
         if(event.getLine(0).equalsIgnoreCase("[CTS]")){
             String idsae = event.getLine(1);
             Mode mode;
-            //vérif regex idsae
+
             final Pattern rx1 = Pattern.compile("[a-zA-Z][a-zA-Z][a-zA-Z][a-zA-Z][a-zA-Z]_\\d\\d", Pattern.CASE_INSENSITIVE);
             final Pattern rx2 = Pattern.compile("[0-9]+", Pattern.CASE_INSENSITIVE);
             final Pattern rx3 = Pattern.compile("[0-9]+[a-zA-Z]", Pattern.CASE_INSENSITIVE);
@@ -32,8 +33,6 @@ public class SignListener implements Listener {
             String sign_mode = event.getLine(2);
             switch (sign_mode){
                 case "":
-                    mode = Mode.SOLO;
-                    break;
                 case "SOLO":
                     mode = Mode.SOLO;
                     break;
@@ -46,6 +45,7 @@ public class SignListener implements Listener {
             }
 
             Signcts.signs.add(new MySign(location.getWorld(), location.getX(), location.getY(), location.getZ(), idsae,mode));
+            DataSource.add(idsae);
             Signcts.instance.saveSigns();
             event.getPlayer().sendMessage("[CTS] Panneau CTS créé !");
 

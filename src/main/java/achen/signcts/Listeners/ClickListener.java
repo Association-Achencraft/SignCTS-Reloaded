@@ -20,16 +20,13 @@ public class ClickListener implements Listener {
     public void onPlayerClick(PlayerInteractEvent event) {
 
         Location location;
-
         if(event.getHand()!=EquipmentSlot.HAND)
             return;
-
         if(event.getAction()==Action.LEFT_CLICK_BLOCK || event.getAction()==Action.RIGHT_CLICK_BLOCK) {
             if (event.getClickedBlock() != null) {
                 location = event.getClickedBlock().getLocation();
                 if (Signcts.task.containsKey(event.getPlayer().getUniqueId())) {
                     CtsTask task = Signcts.task.get(event.getPlayer().getUniqueId());
-
                     switch (task.commande) {
                         case CREATE:
                             click_create(location, task, event.getPlayer());
@@ -65,10 +62,7 @@ public class ClickListener implements Listener {
 
             Signcts.signs.add(new MySign(location.getWorld(), location.getX(), location.getY(), location.getZ(), task.idsae,task.mode));
             Signcts.instance.saveSigns();
-            //todo ajouter l'IDSAE au REDIS
-
             DataSource.add(task.idsae);
-
             Sign panneau = (Sign)location.getBlock().getState();
             panneau.setLine(0,"[CTS]");
             panneau.setLine(1,task.idsae);
@@ -77,7 +71,6 @@ public class ClickListener implements Listener {
 
             player.sendMessage("[CTS] Panneau CTS créé !");
             Signcts.task.remove(player.getUniqueId());
-
         }
         else {
             player.sendMessage("[CTS] ERROR - Please select a sign");
@@ -89,12 +82,14 @@ public class ClickListener implements Listener {
 
         if(location.getBlock().getState() instanceof org.bukkit.block.Sign){
 
+            String old_idsae = "";
             boolean found = false;
             for(MySign s : Signcts.signs)
             {
                 if(s.x == location.getX() && s.y == location.getY() && s.z == location.getZ() && s.world == location.getWorld())
                 {
                     found = true;
+                    old_idsae = s.idsae;
                     s.idsae = task.idsae;
                     s.mode = task.mode;
                 }
@@ -107,9 +102,8 @@ public class ClickListener implements Listener {
             }
 
             Signcts.instance.saveSigns();
-
-            //todo ajouter l'IDSAE dans REDIS si nouveau et supprimer l'ancien si plus aucune référence
-
+            DataSource.remove(old_idsae);
+            DataSource.add(task.idsae);
             Sign panneau = (Sign)location.getBlock().getState();
             panneau.setLine(0,"[CTS]");
             panneau.setLine(1,task.idsae);
@@ -133,9 +127,11 @@ public class ClickListener implements Listener {
             {
                 if(s.x == location.getX() && s.y == location.getY() && s.z == location.getZ() && s.world == location.getWorld())
                 {
+                    String idsae = s.idsae;
                     Signcts.signs.remove(s);
                     Signcts.instance.saveSigns();
-                    //todo supprimer l'idsae si plus aucune référence dans REDIS
+                    DataSource.remove(idsae);
+
                     Sign panneau = (Sign)location.getBlock().getState();
                     panneau.setLine(0,"[CTS]");
                     panneau.setLine(1,"supprimé");
@@ -178,7 +174,7 @@ public class ClickListener implements Listener {
 
         }
         else {
-            player.sendMessage("[CTS] ERROR - Please select a CTS sign");
+            player.sendMessage("[CTS] ERROR - Merci de choisir un panneau CTS");
         }
     }
 }
