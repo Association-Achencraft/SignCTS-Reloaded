@@ -1,10 +1,9 @@
 package achen.signcts;
 
+import achen.signcts.Enums.Mode;
 import org.bukkit.World;
-import org.bukkit.block.BlockFace;
-import org.bukkit.entity.Player;
 
-public class Sign {
+public class MySign {
 
         public World world;
         //public BlockFace orientation;
@@ -15,7 +14,7 @@ public class Sign {
         public Mode mode;
 
 
-        public Sign(World world,double x,double y,double z, String idsae,Mode mode)
+        public MySign(World world,double x,double y,double z, String idsae,Mode mode)
         {
                 this.world = world;
                 this.x = x;

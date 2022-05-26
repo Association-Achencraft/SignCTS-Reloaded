@@ -1,18 +1,9 @@
 package achen.signcts;
 
+import achen.signcts.Enums.Commande;
+import achen.signcts.Enums.Mode;
+
 import java.util.UUID;
-
-enum Commande {
-    CREATE,
-    DELETE,
-    MODIFY,
-    INFO
-}
-
-enum Mode {
-    SOLO,
-    DOUBLE
-}
 
 public class CtsTask {
 
