@@ -13,7 +13,7 @@ public class DataSource {
         String loginpath = Signcts.config.get("redis-password")+"@"+Signcts.config.get("redis-server")+":"+Signcts.config.get("redis-port");
         redisClient = RedisClient.create(RedisURI.create("redis://"+loginpath));
         connection = redisClient.connect();
-        System.out.println("Connected to Redis");
+        Signcts.instance.getLogger().info("Connected to Redis");
     }
 
     public static void disconnect()
@@ -33,16 +33,13 @@ public class DataSource {
     public static void remove(String idsae) {
         //si encore des panneaux ont cet IDSAE, on garde
         for (MySign s : Signcts.signs) {
-            System.out.println(s.idsae +" X "+idsae);
             if(s.idsae.equalsIgnoreCase(idsae))  {
-                System.out.println("encore présent "+idsae);
                 return;
             }
         }
         //sinon on supprime
         RedisCommands<String, String> syncCommands = connection.sync();
         syncCommands.del(idsae);
-        System.out.println("supprime "+idsae);
 
     }
 
