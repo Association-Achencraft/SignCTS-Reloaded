@@ -68,7 +68,7 @@ public class Commands implements CommandExecutor {
         String idsae = args[1];
 
 
-        final Pattern rx1 = Pattern.compile("[a-zA-Z][a-zA-Z][a-zA-Z][a-zA-Z][a-zA-Z]_\\d\\d", Pattern.CASE_INSENSITIVE);
+        final Pattern rx1 = Pattern.compile("[a-zA-Z][a-zA-Z][a-zA-Z][a-zA-Z][a-zA-Z]_[0-9a-zA-Z]\\d", Pattern.CASE_INSENSITIVE);
         final Pattern rx2 = Pattern.compile("[0-9]+", Pattern.CASE_INSENSITIVE);
         final Pattern rx3 = Pattern.compile("[0-9]+[a-zA-Z]", Pattern.CASE_INSENSITIVE);
         if(!(rx1.matcher(idsae).matches() || rx2.matcher(idsae).matches() || rx3.matcher(idsae).matches()))

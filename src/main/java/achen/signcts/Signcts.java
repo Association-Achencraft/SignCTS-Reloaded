@@ -173,6 +173,7 @@ public final class Signcts extends JavaPlugin {
         config.put("redis-port",configSection.getString("redis-port"));
         config.put("redis-password",configSection.getString("redis-password"));
         config.put("update-interval",configSection.getString("update-interval"));
+        config.put("timestamp-adjust",configSection.getString("timestamp-adjust"));
     }
 
 

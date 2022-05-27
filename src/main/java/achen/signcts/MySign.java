@@ -62,7 +62,9 @@ public class MySign {
                         panneau1.setLine(3, "");
                         String data = DataSource.get(this.idsae);
 
+
                         Timestamp ts_now = new Timestamp(System.currentTimeMillis());
+                        ts_now.setTime(ts_now.getTime() + (1000L * 3600 * Integer.parseInt(Signcts.config.get("timestamp-adjust"))));
                         Integer cnt = 1;
 
 

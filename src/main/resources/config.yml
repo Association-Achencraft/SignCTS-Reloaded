@@ -10,6 +10,9 @@ variables:
   #Interval de temps en secondes où le plugin interroge Redis pour mettre à jour les panneaux
   update-interval: '15'
 
+  #Ajustement Timestamp (la valeur 2 signifie +2h)
+  timestamp-adjust: '2'
+
 colors:
 
   #couleur de la chaîne "Temps d'attente"
