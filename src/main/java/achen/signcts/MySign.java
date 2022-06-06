@@ -192,7 +192,7 @@ public class MySign {
                                                         int lgr_mot = 0;
                                                         String out = "";
                                                         char[] destab = dest.toCharArray();
-                                                        while (pixel_lgr < 66) {
+                                                        while (pixel_lgr < 65) {
                                                                 if (lgr < dest.length()){
                                                                         if (letters.containsKey(destab[lgr])) {
                                                                                 pixel_lgr = pixel_lgr + letters.get(destab[lgr]);
